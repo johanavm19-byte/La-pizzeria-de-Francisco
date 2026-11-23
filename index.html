@@ -1,1 +1,929 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Francisco's Pizza - Aventura de las fracciones</title>
 
+<style>
+:root {
+  --red: #c83b2d;
+  --gold: #f5bd55;
+  --cream: #fff5df;
+  --dark: #30231e;
+  --green: #397b51;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #2c211c;
+  color: var(--dark);
+}
+
+header {
+  background: linear-gradient(120deg,#8e241c,#d64a32);
+  color: white;
+  padding: 18px;
+  text-align: center;
+  border-bottom: 5px solid #f5bd55;
+}
+
+header h1 {
+  margin: 0;
+  font-size: clamp(25px,5vw,42px);
+}
+
+header p { margin: 7px 0 0; }
+
+.stats {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.stat {
+  background: #ffffff22;
+  border: 1px solid #ffffff55;
+  border-radius: 12px;
+  padding: 8px 16px;
+  font-weight: bold;
+}
+
+.kitchen {
+  min-height: 310px;
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(90deg,#42352d 0 2%,transparent 2% 98%,#42352d 98%),
+    repeating-linear-gradient(0deg,#d6c4a8 0 48px,#bba78a 49px 52px);
+  border-bottom: 12px solid #69452e;
+}
+
+.kitchen::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 75px;
+  background:
+    linear-gradient(90deg,transparent 0 10%,#57483c 10% 11%,transparent 11% 89%,#57483c 89% 90%,transparent 90%),
+    repeating-linear-gradient(90deg,#e8d9c1 0 100px,#b9a58c 101px 104px);
+  opacity: .8;
+}
+
+.shelf {
+  position: absolute;
+  top: 32px;
+  left: 5%;
+  right: 5%;
+  height: 12px;
+  background: #70452c;
+  box-shadow: 0 8px 12px #0004;
+}
+
+.jar {
+  position: absolute;
+  top: 0;
+  left: 15%;
+  font-size: 30px;
+}
+
+.jar.two { left: 27%; }
+.jar.three { left: 72%; }
+
+.oven {
+  position: absolute;
+  right: 8%;
+  bottom: 18px;
+  width: 150px;
+  height: 165px;
+  background: #393b3b;
+  border: 8px solid #77716a;
+  border-radius: 12px 12px 3px 3px;
+  box-shadow: inset 0 0 15px #000;
+}
+
+.oven-window {
+  position: absolute;
+  inset: 30px 12px 18px;
+  background: radial-gradient(ellipse,#f8a33b,#9b351c 65%,#291b18);
+  border: 5px solid #1e1e1e;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.oven-window::after {
+  content: "🔥";
+  position: absolute;
+  font-size: 48px;
+  bottom: 3px;
+  left: 38px;
+  animation: fire 1s infinite alternate;
+}
+
+@keyframes fire {
+  from { transform: scale(.9); }
+  to { transform: scale(1.12); }
+}
+
+.oven-label {
+  position: absolute;
+  top: 5px;
+  left: 0;
+  right: 0;
+  color: white;
+  text-align: center;
+  font-size: 12px;
+}
+
+.counter {
+  position: absolute;
+  bottom: 0;
+  height: 72px;
+  left: 0;
+  right: 0;
+  background: linear-gradient(#9c6943 0 15%,#68432c 16% 100%);
+  border-top: 8px solid #d7b18a;
+  box-shadow: 0 -5px 12px #0004;
+}
+
+.chef {
+  position: absolute;
+  bottom: 47px;
+  left: 12%;
+  z-index: 2;
+  width: 130px;
+  text-align: center;
+  animation: chefMove 3s ease-in-out infinite;
+}
+
+.chef-hat {
+  font-size: 53px;
+  line-height: 1;
+  filter: drop-shadow(2px 3px 2px #3335);
+}
+
+.chef-body {
+  background: #f5f1e9;
+  border: 4px solid #d8d0c4;
+  border-radius: 22px 22px 8px 8px;
+  height: 82px;
+  margin-top: -5px;
+  font-size: 35px;
+  padding-top: 8px;
+  box-shadow: 0 5px 8px #0003;
+}
+
+.chef-name {
+  color: white;
+  font-weight: bold;
+  background: #8d3025;
+  border-radius: 12px;
+  padding: 5px;
+  margin-top: 4px;
+}
+
+@keyframes chefMove {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.steam {
+  position: absolute;
+  left: 22%;
+  bottom: 145px;
+  font-size: 28px;
+  animation: steam 2s infinite;
+  opacity: .6;
+}
+
+.steam.two {
+  left: 25%;
+  animation-delay: .7s;
+}
+
+@keyframes steam {
+  0% { transform: translateY(10px); opacity: 0; }
+  50% { opacity: .8; }
+  100% { transform: translateY(-35px); opacity: 0; }
+}
+
+.pizza {
+  position: absolute;
+  z-index: 2;
+  bottom: 48px;
+  left: 48%;
+  font-size: 52px;
+  animation: pizzaMove 5s linear infinite;
+}
+
+@keyframes pizzaMove {
+  0% { transform: translateX(-80px) rotate(0); }
+  50% { transform: translateX(80px) rotate(15deg); }
+  100% { transform: translateX(-80px) rotate(0); }
+}
+
+.main {
+  max-width: 1050px;
+  margin: 25px auto;
+  padding: 0 15px 40px;
+}
+
+.panel {
+  background: var(--cream);
+  padding: 24px;
+  border-radius: 18px;
+  box-shadow: 0 8px 25px #0005;
+  margin-bottom: 20px;
+}
+
+h2 { color: #9f3025; }
+
+.station-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(190px,1fr));
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.station {
+  background: #f4e4c9;
+  border: 2px solid #d8b98d;
+  border-radius: 12px;
+  padding: 15px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.station.active {
+  border: 3px solid var(--red);
+  background: #ffe1b5;
+}
+
+.station.done {
+  background: #d8efdc;
+  border-color: var(--green);
+}
+
+.progress {
+  background: #ddd0ba;
+  height: 13px;
+  border-radius: 20px;
+  overflow: hidden;
+  margin: 12px 0 20px;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg,#d94c32,#f5bd55);
+  transition: width .4s;
+}
+
+.question {
+  font-size: 21px;
+  line-height: 1.5;
+  font-weight: bold;
+  margin: 20px 0;
+}
+
+.answer-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+input {
+  flex: 1;
+  min-width: 180px;
+  padding: 14px;
+  border: 2px solid #c7ae8c;
+  border-radius: 10px;
+  font-size: 18px;
+}
+
+button {
+  border: none;
+  border-radius: 10px;
+  padding: 13px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform .15s,filter .15s;
+}
+
+button:hover { transform: translateY(-2px); filter: brightness(1.05); }
+button:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
+.primary { background: var(--red); color: white; }
+.secondary { background: #e9c17e; color: #38281d; }
+.success { background: var(--green); color: white; }
+
+.feedback {
+  margin-top: 18px;
+  padding: 16px;
+  border-radius: 12px;
+  display: none;
+  line-height: 1.5;
+}
+
+.feedback.good {
+  display: block;
+  background: #d9efdc;
+  border: 2px solid #6aa879;
+}
+
+.feedback.bad {
+  display: block;
+  background: #f9dfd6;
+  border: 2px solid #d77a64;
+}
+
+.feedback strong { display: block; margin-bottom: 5px; }
+
+.hint {
+  margin-top: 12px;
+  color: #79552f;
+  background: #fff0cb;
+  padding: 12px;
+  border-radius: 10px;
+  display: none;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.hidden { display: none !important; }
+
+.result-item {
+  background: #f3e5ce;
+  border-radius: 10px;
+  padding: 13px;
+  margin: 10px 0;
+  line-height: 1.5;
+}
+
+.result-item.correct { border-left: 6px solid #397b51; }
+.result-item.incorrect { border-left: 6px solid #c83b2d; }
+
+.final-score {
+  font-size: 34px;
+  color: #a43125;
+  font-weight: bold;
+}
+
+footer {
+  text-align: center;
+  color: #f7e7d1;
+  padding: 18px;
+}
+
+@media(max-width:600px) {
+  .kitchen { min-height: 245px; }
+  .oven { transform: scale(.75); transform-origin: bottom right; }
+  .chef { left: 4%; transform: scale(.8); transform-origin: bottom left; }
+  .pizza { left: 45%; font-size: 38px; }
+  .panel { padding: 17px; }
+  .question { font-size: 18px; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>🍕 FRANCISCO'S PIZZA</h1>
+  <p>La aventura de las fracciones</p>
+  <div class="stats">
+    <div class="stat">⭐ Puntos: <span id="points">0</span></div>
+    <div class="stat">📋 Pregunta: <span id="counter">0/12</span></div>
+    <div class="stat">🏆 Aciertos: <span id="solved">0</span></div>
+  </div>
+</header>
+
+<section class="kitchen">
+  <div class="shelf"></div>
+  <div class="jar">🫙</div>
+  <div class="jar two">🧂</div>
+  <div class="jar three">🌿</div>
+  <div class="steam">♨️</div>
+  <div class="steam two">♨️</div>
+
+  <div class="chef">
+    <div class="chef-hat">👨‍🍳</div>
+    <div class="chef-body">🍕</div>
+    <div class="chef-name">Chef Francisco</div>
+  </div>
+
+  <div class="pizza">🍕</div>
+
+  <div class="oven">
+    <div class="oven-label">HORNO 250 °C</div>
+    <div class="oven-window"></div>
+  </div>
+
+  <div class="counter"></div>
+</section>
+
+<main class="main">
+
+  <section class="panel" id="welcome">
+    <h2>¡Bienvenido a nuestra pizzería!</h2>
+    <p>
+      ¡Hola, pizzero! Soy el chef Francisco. Hoy tenemos muchos pedidos
+      y necesito tu ayuda. Para convertirte en un maestro pizzero,
+      tendrás que superar cuatro estaciones resolviendo desafíos de fracciones.
+    </p>
+
+    <div class="station-list">
+      <div class="station">🍕<br>1. Pedidos de pizza</div>
+      <div class="station">🥤<br>2. Las bebidas</div>
+      <div class="station">🧀<br>3. Pedidos especiales</div>
+      <div class="station">💰<br>4. La caja registradora</div>
+    </div>
+
+    <p><strong>Reglas del juego:</strong></p>
+    <ul>
+      <li>Lee con atención cada pedido.</li>
+      <li>Escribe tu respuesta y comprueba si es correcta.</li>
+      <li>Recibirás una explicación después de cada respuesta.</li>
+      <li>Puedes solicitar una pista cuando la necesites.</li>
+      <li>Al finalizar conocerás tu puntuación y tus resultados.</li>
+    </ul>
+
+    <p>¡Ponte el delantal y comienza esta aventura!</p>
+    <button class="primary" onclick="startGame()">🚀 Comenzar aventura</button>
+  </section>
+
+  <section class="panel hidden" id="game">
+    <h2 id="stationTitle"></h2>
+    <p id="stationDescription"></p>
+
+    <div class="progress">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <p><strong id="questionNumber"></strong></p>
+    <div class="question" id="questionText"></div>
+
+    <div class="answer-row">
+      <input
+        id="answerInput"
+        type="text"
+        placeholder="Escribe tu respuesta. Ejemplo: 3/4"
+        autocomplete="off"
+      >
+      <button class="primary" id="checkButton" onclick="checkAnswer()">
+        Comprobar
+      </button>
+    </div>
+
+    <div class="feedback" id="feedback"></div>
+    <div class="hint" id="hintBox"></div>
+
+    <div class="actions">
+      <button class="secondary" id="hintButton" onclick="showHint()">
+        💡 Necesito una pista
+      </button>
+      <button class="success hidden" id="nextButton" onclick="nextQuestion()">
+        Siguiente pedido ➜
+      </button>
+    </div>
+  </section>
+
+  <section class="panel hidden" id="results">
+    <h2>🏆 ¡Terminaste tu aventura!</h2>
+    <p>El chef Francisco ha revisado todos tus pedidos.</p>
+
+    <p class="final-score">
+      <span id="finalPoints">0</span> puntos
+    </p>
+
+    <p id="finalMessage"></p>
+    <p><strong>Respuestas correctas:</strong> <span id="finalSolved"></span> de 12</p>
+    <p><strong>Porcentaje de aciertos:</strong> <span id="percentage"></span>%</p>
+
+    <h3>📊 Resultados por estación</h3>
+    <div id="stationResults"></div>
+
+    <h3>📝 Informe de tus respuestas</h3>
+    <div id="detailedResults"></div>
+
+    <button class="primary" onclick="resetGame()">🔄 Jugar nuevamente</button>
+    <button class="secondary" onclick="window.print()">🖨️ Imprimir informe</button>
+  </section>
+
+</main>
+
+<footer>
+  Francisco's Pizza · Aprender matemáticas también puede ser delicioso 🍕
+</footer>
+
+<script>
+const stations = [
+  {
+    title: "🍕 Estación 1: Pedidos de pizza",
+    description: "Prepara las pizzas y distribuye correctamente sus porciones.",
+    questions: [
+      {
+        text: "Un cliente pide una pizza dividida en 8 porciones iguales. Si se entregan 5 porciones, ¿qué fracción de la pizza se entregó?",
+        answer: 5/8,
+        display: "5/8",
+        hint: "El numerador representa las porciones entregadas y el denominador el total de porciones.",
+        explanation: "Se entregaron 5 de las 8 porciones. Por eso, la fracción es 5/8."
+      },
+      {
+        text: "Una pizza se divide en 12 porciones iguales. Si se entregan 3/4 de la pizza, ¿cuántas porciones se entregan?",
+        answer: 9,
+        display: "9",
+        hint: "Calcula 3/4 de 12. Primero divide 12 entre 4 y después multiplica por 3.",
+        explanation: "12 ÷ 4 = 3 y 3 × 3 = 9. Se entregan 9 porciones."
+      },
+      {
+        text: "Una pizza está dividida en 8 porciones. Si se comen 3/8, ¿qué fracción de la pizza queda?",
+        answer: 5/8,
+        display: "5/8",
+        hint: "Resta las porciones consumidas al total de porciones.",
+        explanation: "8/8 - 3/8 = 5/8. Quedan 5/8 de pizza."
+      }
+    ]
+  },
+  {
+    title: "🥤 Estación 2: Las bebidas",
+    description: "Prepara las bebidas para que cada cliente reciba la cantidad solicitada.",
+    questions: [
+      {
+        text: "Para preparar una bebida se necesitan 3/4 de litro de agua. ¿Qué cantidad representa esa fracción en litros? Escribe 3/4.",
+        answer: 3/4,
+        display: "3/4",
+        hint: "El denominador indica que el litro se divide en cuatro partes iguales.",
+        explanation: "Tres de las cuatro partes de un litro representan 3/4 de litro."
+      },
+      {
+        text: "Tenemos 3 litros de limonada. Cada vaso contiene 1/4 de litro. ¿Cuántos vasos podemos llenar?",
+        answer: 12,
+        display: "12",
+        hint: "Divide los 3 litros entre 1/4. Recuerda que dividir por 1/4 equivale a multiplicar por 4.",
+        explanation: "3 ÷ 1/4 = 3 × 4 = 12 vasos."
+      },
+      {
+        text: "Para una receta se necesitan 3/4 de litro de jugo. Si preparamos el doble, ¿cuántos litros necesitamos?",
+        answer: 3/2,
+        display: "3/2",
+        hint: "Multiplica 3/4 por 2.",
+        explanation: "3/4 × 2 = 6/4 = 3/2 litros, equivalentes a 1 litro y medio."
+      }
+    ]
+  },
+  {
+    title: "🧀 Estación 3: Pedidos especiales",
+    description: "Los clientes tienen recetas especiales. ¡Presta atención a las cantidades!",
+    questions: [
+      {
+        text: "Una receta utiliza 1/4 de taza de queso y otra utiliza 1/4 de taza. ¿Cuánto queso se necesita en total?",
+        answer: 1/2,
+        display: "1/2",
+        hint: "Suma las fracciones. Como tienen el mismo denominador, suma los numeradores.",
+        explanation: "1/4 + 1/4 = 2/4 = 1/2 taza."
+      },
+      {
+        text: "Una pizza completa se divide en dos partes iguales. Si se vende una de esas partes, ¿qué fracción de pizza queda?",
+        answer: 1/2,
+        display: "1/2",
+        hint: "Una pizza completa equivale a 2/2.",
+        explanation: "2/2 - 1/2 = 1/2. Queda media pizza."
+      },
+      {
+        text: "Cada pizza necesita 3/4 de taza de salsa. Si preparamos dos pizzas, ¿cuánta salsa necesitamos?",
+        answer: 3/2,
+        display: "3/2",
+        hint: "Suma 3/4 + 3/4.",
+        explanation: "3/4 + 3/4 = 6/4 = 3/2 tazas."
+      }
+    ]
+  },
+  {
+    title: "💰 Estación 4: La caja registradora",
+    description: "Es momento de revisar las cantidades y cerrar las cuentas.",
+    questions: [
+      {
+        text: "Un cliente pide 6/5 de pizza. ¿Cuántas pizzas completas y qué fracción adicional representa este pedido? Escribe la cantidad como fracción impropia: 6/5.",
+        answer: 6/5,
+        display: "6/5",
+        hint: "Una pizza completa equivale a 5/5.",
+        explanation: "6/5 equivale a 1 pizza completa y 1/5 adicional."
+      },
+      {
+        text: "Un pedido cuesta $18.000 y recibe un descuento de $12.000. ¿Cuánto dinero debe pagar el cliente?",
+        answer: 6000,
+        display: "6000",
+        hint: "Resta el descuento al precio inicial.",
+        explanation: "$18.000 - $12.000 = $6.000."
+      },
+      {
+        text: "Una receta requiere 7/6 de kilogramo de harina y otra requiere 0/6 adicional. ¿Cuánto se necesita en total? Escribe la fracción.",
+        answer: 7/6,
+        display: "7/6",
+        hint: "Si no se agrega una cantidad adicional, la cantidad inicial permanece igual.",
+        explanation: "7/6 + 0/6 = 7/6."
+      }
+    ]
+  }
+];
+
+let stationIndex = 0;
+let questionIndex = 0;
+let points = 0;
+let solved = 0;
+let attempts = 0;
+let currentAnswered = false;
+let report = [];
+
+function startGame() {
+  document.getElementById("welcome").classList.add("hidden");
+  document.getElementById("results").classList.add("hidden");
+  document.getElementById("game").classList.remove("hidden");
+
+  stationIndex = 0;
+  questionIndex = 0;
+  points = 0;
+  solved = 0;
+  attempts = 0;
+  report = [];
+
+  stations.forEach(station => {
+    station.questions.forEach(question => {
+      report.push({
+        station: station.title,
+        question: question.text,
+        answer: question.display,
+        correct: false,
+        attempts: 0,
+        earned: 0
+      });
+    });
+  });
+
+  updateStats();
+  loadQuestion();
+}
+
+function getCurrentQuestion() {
+  return stations[stationIndex].questions[questionIndex];
+}
+
+function loadQuestion() {
+  currentAnswered = false;
+
+  const station = stations[stationIndex];
+  const question = getCurrentQuestion();
+
+  document.getElementById("stationTitle").textContent = station.title;
+  document.getElementById("stationDescription").textContent = station.description;
+
+  document.getElementById("questionNumber").textContent =
+    "Desafío " + (questionIndex + 1) + " de 3";
+
+  document.getElementById("questionText").textContent = question.text;
+
+  document.getElementById("answerInput").value = "";
+  document.getElementById("answerInput").disabled = false;
+
+  document.getElementById("checkButton").disabled = false;
+  document.getElementById("nextButton").classList.add("hidden");
+
+  document.getElementById("hintButton").classList.remove("hidden");
+  document.getElementById("hintBox").style.display = "none";
+
+  const feedback = document.getElementById("feedback");
+  feedback.className = "feedback";
+  feedback.innerHTML = "";
+
+  const totalQuestions = 12;
+  const completed = stationIndex * 3 + questionIndex;
+
+  document.getElementById("progressBar").style.width =
+    (completed / totalQuestions * 100) + "%";
+
+  document.getElementById("counter").textContent =
+    (completed + 1) + "/12";
+
+  document.getElementById("questionNumber").scrollIntoView({
+    behavior: "smooth",
+    block: "center"
+  });
+}
+
+function parseAnswer(value) {
+  value = value.trim().replace(",", ".");
+
+  if (!value) return NaN;
+
+  if (value.includes("/")) {
+    const parts = value.split("/");
+
+    if (parts.length !== 2) return NaN;
+
+    const numerator = Number(parts[0].trim());
+    const denominator = Number(parts[1].trim());
+
+    if (!Number.isFinite(numerator) ||
+        !Number.isFinite(denominator) ||
+        denominator === 0) return NaN;
+
+    return numerator / denominator;
+  }
+
+  return Number(value);
+}
+
+function checkAnswer() {
+  if (currentAnswered) return;
+
+  const input = document.getElementById("answerInput");
+  const userValue = parseAnswer(input.value);
+
+  if (!Number.isFinite(userValue)) {
+    showFeedback(
+      false,
+      "¡Revisa tu respuesta!",
+      "Escribe un número o una fracción como 3/4."
+    );
+    return;
+  }
+
+  const question = getCurrentQuestion();
+  const correct = Math.abs(userValue - question.answer) < 0.0001;
+
+  const reportIndex = stationIndex * 3 + questionIndex;
+  const item = report[reportIndex];
+
+  item.attempts++;
+  attempts++;
+
+  if (correct) {
+    currentAnswered = true;
+
+    const earned = item.attempts === 1 ? 100 : 50;
+
+    points += earned;
+    solved++;
+
+    item.correct = true;
+    item.earned = earned;
+
+    showFeedback(
+      true,
+      "🎉 ¡Excelente trabajo, pizzero!",
+      question.explanation + " Ganaste " + earned + " puntos."
+    );
+
+    input.disabled = true;
+    document.getElementById("checkButton").disabled = true;
+    document.getElementById("hintButton").classList.add("hidden");
+    document.getElementById("nextButton").classList.remove("hidden");
+
+  } else {
+    showFeedback(
+      false,
+      "¡Vamos a intentarlo nuevamente!",
+      "Tu respuesta todavía no es correcta. Lee la pregunta y prueba otra vez. ¡Tú puedes!"
+    );
+  }
+
+  updateStats();
+}
+
+function showFeedback(good, title, message) {
+  const feedback = document.getElementById("feedback");
+
+  feedback.className = good ? "feedback good" : "feedback bad";
+
+  feedback.innerHTML =
+    "<strong>" + title + "</strong>" + message;
+}
+
+function showHint() {
+  const question = getCurrentQuestion();
+  const hintBox = document.getElementById("hintBox");
+
+  hintBox.textContent = "💡 Pista: " + question.hint;
+  hintBox.style.display = "block";
+}
+
+function nextQuestion() {
+  if (!currentAnswered) return;
+
+  questionIndex++;
+
+  if (questionIndex >= 3) {
+    stationIndex++;
+    questionIndex = 0;
+  }
+
+  if (stationIndex >= stations.length) {
+    finishGame();
+    return;
+  }
+
+  loadQuestion();
+}
+
+function updateStats() {
+  document.getElementById("points").textContent = points;
+  document.getElementById("solved").textContent = solved;
+}
+
+function finishGame() {
+  document.getElementById("game").classList.add("hidden");
+  document.getElementById("results").classList.remove("hidden");
+
+  document.getElementById("progressBar").style.width = "100%";
+
+  document.getElementById("finalPoints").textContent = points;
+  document.getElementById("finalSolved").textContent = solved;
+
+  const percentage = Math.round((solved / 12) * 100);
+  document.getElementById("percentage").textContent = percentage;
+
+  let message = "";
+
+  if (percentage === 100) {
+    message = "🏆 ¡Increíble! Has demostrado ser un maestro de las fracciones.";
+  } else if (percentage >= 75) {
+    message = "⭐ ¡Muy bien! Tienes un gran dominio de las fracciones.";
+  } else if (percentage >= 50) {
+    message = "👏 ¡Buen trabajo! Sigue practicando para mejorar.";
+  } else {
+    message = "🍕 ¡Gracias por participar! Cada desafío es una oportunidad para aprender.";
+  }
+
+  document.getElementById("finalMessage").textContent = message;
+
+  const stationResults = document.getElementById("stationResults");
+  stationResults.innerHTML = "";
+
+  stations.forEach((station, index) => {
+    const stationReport = report.slice(index * 3, index * 3 + 3);
+    const correctCount = stationReport.filter(item => item.correct).length;
+    const stationPoints = stationReport.reduce((sum, item) => sum + item.earned, 0);
+
+    const div = document.createElement("div");
+    div.className = "result-item";
+
+    div.innerHTML =
+      "<strong>" + station.title + "</strong><br>" +
+      "Respuestas correctas: " + correctCount + "/3<br>" +
+      "Puntos obtenidos: " + stationPoints;
+
+    stationResults.appendChild(div);
+  });
+
+  const detailedResults = document.getElementById("detailedResults");
+  detailedResults.innerHTML = "";
+
+  report.forEach((item, index) => {
+    const div = document.createElement("div");
+
+    div.className = "result-item " +
+      (item.correct ? "correct" : "incorrect");
+
+    div.innerHTML =
+      "<strong>Pregunta " + (index + 1) + "</strong><br>" +
+      item.station + "<br>" +
+      item.question + "<br>" +
+      "Respuesta esperada: " + item.answer + "<br>" +
+      "Resultado: " + (item.correct ? "Correcta" : "No resuelta") + "<br>" +
+      "Intentos: " + item.attempts + "<br>" +
+      "Puntos: " + item.earned;
+
+    detailedResults.appendChild(div);
+  });
+
+  document.getElementById("counter").textContent = "12/12";
+
+  document.getElementById("results").scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+}
+
+function resetGame() {
+  document.getElementById("results").classList.add("hidden");
+  document.getElementById("welcome").classList.remove("hidden");
+
+  document.getElementById("counter").textContent = "0/12";
+  document.getElementById("points").textContent = "0";
+  document.getElementById("solved").textContent = "0";
+}
+</script>
+
+</body>
+</html>
